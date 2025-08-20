@@ -41,7 +41,7 @@ CREATE TABLE CREDENCIALES (
   foto_cred BLOB NOT NULL,
   identificacion_cred VARCHAR(30) NOT NULL,
   fecha_ingreso_cred DATE NOT NULL,
-  pass_cred VARCHAR(150) NOT NULL,
+  pass_cred VARCHAR(300) NOT NULL,
   estado_cred TINYINT NOT NULL,
   PRIMARY KEY (codigo_cred),
   INDEX ind_credencial_usuario (codigo_cred ASC),
