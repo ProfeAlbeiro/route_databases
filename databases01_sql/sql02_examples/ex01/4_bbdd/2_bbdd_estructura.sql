@@ -1,4 +1,4 @@
-## DROP DATABASE BBDD_INVENTARIO;
+DROP DATABASE BBDD_INVENTARIO;
 -- -----------------------------------------------------
 -- Estructura BBDD_INVENTARIO
 -- -----------------------------------------------------
@@ -88,7 +88,7 @@ CREATE TABLE PRODUCTOS (
   codigo_producto VARCHAR(10) NOT NULL,
   nombre_producto VARCHAR(50) NOT NULL,
   precio_producto DECIMAL(10,2) NOT NULL,
-  unidad_producto DECIMAL(5,2) NOT NULL,
+  unidad_producto DECIMAL(10,2) NOT NULL,
   medida_producto VARCHAR(20) NOT NULL,
   stock_productos INT NOT NULL,
   PRIMARY KEY (codigo_producto),
@@ -165,7 +165,7 @@ CREATE TABLE LISTA_PRODUCTOS_PEDIDOS (
 -- -----------------------------------------------------
 CREATE TABLE VENDEDORES (
   codigo_seller VARCHAR(10) NOT NULL,
-  salario_seller DECIMAL(8,2) NOT NULL,
+  salario_seller DECIMAL(15,2) NOT NULL,
   INDEX ind_vendedor_credencial (codigo_seller ASC),
   PRIMARY KEY (codigo_seller),
   CONSTRAINT chk_soloVendedor 
