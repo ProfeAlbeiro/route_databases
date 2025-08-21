@@ -108,7 +108,7 @@ ON clientes.codigo_customer = pedidos.codigo_customer;
 SELECT * FROM CREDENCIALES AS CR
 INNER JOIN CLIENTES AS CL
 ON credenciales.codigo_cred = clientes.codigo_customer
-INNER JOIN PEDIDOS AS PD1
+INNER JOIN PEDIDOS AS PD
 ON clientes.codigo_customer = pedidos.codigo_customer;
 
 SELECT * FROM USUARIOS

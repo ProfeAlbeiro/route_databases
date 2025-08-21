@@ -91,17 +91,17 @@ INSERT INTO CATEGORIAS VALUES
 
 INSERT INTO PRODUCTOS VALUES 
 (1, 'prod-1', 'Papa', 950.03, 1.00, 'libra', 10),
-(1, 'prod-2', 'Zanahoria', 630.33, 1.00, 'libra', 10),
-(1, 'prod-3', 'Tomate', 750.55, 1.00, 'libra', 10),
-(2, 'prod-4', 'Arroz', 2500.00, 500.00, 'gramos', 10),
-(2, 'prod-5', 'aceite', 10500.00, 1.00, 'litro', 10),
-(2, 'prod-6', 'Lentejas', 3500.00, 1000.00, 'gramos', 10),
-(3, 'prod-7', 'Agua', 3000.00, 1.50, 'litro', 10),
-(3, 'prod-8', 'Gaseosa', 3500.00, 2.50, 'litro', 10),
-(3, 'prod-9', 'Cerveza', 2500.00, 1.00, 'botella', 10),
-(4, 'prod-10', 'Jabón Baño', 1200.00, 285.00, 'gramos', 10),
+(1, 'prod-2', 'Zanahoria', 630.33, 1.00, 'libra', 20),
+(1, 'prod-3', 'Tomate', 750.55, 1.00, 'libra', 30),
+(2, 'prod-4', 'Arroz', 2500.00, 500.00, 'gramos', 40),
+(2, 'prod-5', 'aceite', 10500.00, 1.00, 'litro', 50),
+(2, 'prod-6', 'Lentejas', 3500.00, 1000.00, 'gramos', 60),
+(3, 'prod-7', 'Agua', 3000.00, 1.50, 'litro', 50),
+(3, 'prod-8', 'Gaseosa', 3500.00, 2.50, 'litro', 40),
+(3, 'prod-9', 'Cerveza', 2500.00, 1.00, 'botella', 30),
+(4, 'prod-10', 'Jabón Baño', 1200.00, 285.00, 'gramos', 20),
 (4, 'prod-11', 'Jabón Ropa', 12000.00, 1000.00, 'gramos', 10),
-(4, 'prod-12', 'Shampoo', 18500.00, 750.00, 'mililitros', 10);
+(4, 'prod-12', 'Shampoo', 18500.00, 750.00, 'mililitros', 5);
 
 INSERT INTO PEDIDOS VALUES
 ('customer-1','pedido-1','2022-10-13','Bogotá','Av Siempre Viva',

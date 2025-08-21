@@ -123,55 +123,75 @@ ON U.codigo_user = C.codigo_cred;
 ## Consultar Usuarios Registrados. Eliminar Vista
 DROP VIEW VW_CREDENTIAL;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* ************************************************************************************* */
 
 -- ------------------------------------------------------------------------------------- --
-## Consultar el Stock
-
-CREATE VIEW VW_INVENTARIO_STOCK AS
+## Consultar stock, precio de venta y subtotal. Crear Vista
+CREATE VIEW VW_STOCK_VENTA_SUBTOTAL AS
 SELECT 
-nombre_categoria AS categoria,
-PRODUCTOS.codigo_producto AS codigo,
-nombre_producto AS nombre,
-stock_productos AS stock,
-precio_producto AS precio_venta,
-stock_productos * precio_producto AS subtotal_stock
-FROM CATEGORIAS
-INNER JOIN PRODUCTOS
-ON CATEGORIAS.codigo_categoria = PRODUCTOS.codigo_categoria
-GROUP BY PRODUCTOS.codigo_producto
-ORDER BY CATEGORIAS.nombre_categoria ASC;
+	nombre_categoria AS categoria,
+	P.codigo_producto AS codigo,
+	nombre_producto AS nombre,
+	stock_productos AS stock,
+	precio_producto AS precio_venta,
+	stock_productos * precio_producto AS subtotal_stock
+FROM CATEGORIAS AS C
+INNER JOIN PRODUCTOS AS P
+ON C.codigo_categoria = P.codigo_categoria
+ORDER BY C.nombre_categoria ASC;
 
 -- ------------------------------------------------------------------------------------- --
-## Consultar la Ventas
+## Consultar stock, precio de venta y subtotal. Usar Vista
+SELECT * FROM VW_STOCK_VENTA_SUBTOTAL;
 
+-- ------------------------------------------------------------------------------------- --
+## Consultar stock, precio de venta y subtotal. Eliminar Vista
+DROP VIEW VW_STOCK_VENTA_SUBTOTAL;
+
+/* ************************************************************************************* */
+
+-- ------------------------------------------------------------------------------------- --
+## Consultar Ventas. Crear Vista
 CREATE VIEW VW_INVENTARIO_VENTAS AS
 SELECT 
-nombre_categoria AS categoria,
-PRODUCTOS.codigo_producto AS codigo,
-nombre_producto AS nombre,
-IFNULL(SUM(cantidad_productos),0) AS cant_venta,
-precio_producto AS precio_venta,
-IFNULL(SUM(cantidad_productos),0) * precio_producto AS subtotal_ventas
-FROM CATEGORIAS
-INNER JOIN PRODUCTOS
-ON CATEGORIAS.codigo_categoria = PRODUCTOS.codigo_categoria
-LEFT JOIN LISTA_PRODUCTOS_PEDIDOS
-ON PRODUCTOS.codigo_producto = LISTA_PRODUCTOS_PEDIDOS.codigo_producto
-GROUP BY PRODUCTOS.codigo_producto
-ORDER BY PRODUCTOS.codigo_producto;
+	nombre_categoria AS categoria,
+	P.codigo_producto AS codigo,
+	nombre_producto AS nombre,
+	IFNULL(SUM(cantidad_productos),0) AS cant_venta,
+	precio_producto AS precio_venta,
+	IFNULL(SUM(cantidad_productos),0) * precio_producto AS subtotal_ventas
+FROM CATEGORIAS AS C
+INNER JOIN PRODUCTOS AS P
+ON C.codigo_categoria = P.codigo_categoria
+LEFT JOIN LISTA_PRODUCTOS_PEDIDOS AS LPP
+ON P.codigo_producto = LPP.codigo_producto
+GROUP BY P.codigo_producto
+ORDER BY C.nombre_categoria ASC, cant_venta DESC;
+-- ORDER BY C.codigo_categoria ASC, P.codigo_producto;
+
+-- ------------------------------------------------------------------------------------- --
+## Consultar Ventas. Usar Vista
+SELECT * FROM VW_INVENTARIO_VENTAS;
+
+-- ------------------------------------------------------------------------------------- --
+## Consultar Ventas. Eliminar Vista
+DROP VIEW VW_INVENTARIO_VENTAS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- ------------------------------------------------------------------------------------- --
 ## Consultar Compras
