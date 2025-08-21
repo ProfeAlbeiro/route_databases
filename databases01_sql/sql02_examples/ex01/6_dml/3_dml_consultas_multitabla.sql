@@ -105,10 +105,10 @@ SELECT * FROM PRODUCTOS_NUEVOS;
 SELECT * FROM CLIENTES INNER JOIN PEDIDOS
 ON clientes.codigo_customer = pedidos.codigo_customer;
 
-SELECT * FROM CREDENCIALES 
-INNER JOIN CLIENTES
+SELECT * FROM CREDENCIALES AS CR
+INNER JOIN CLIENTES AS CL
 ON credenciales.codigo_cred = clientes.codigo_customer
-INNER JOIN PEDIDOS
+INNER JOIN PEDIDOS AS PD1
 ON clientes.codigo_customer = pedidos.codigo_customer;
 
 SELECT * FROM USUARIOS
