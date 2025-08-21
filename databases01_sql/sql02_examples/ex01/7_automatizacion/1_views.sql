@@ -151,7 +151,7 @@ DROP VIEW VW_STOCK_VENTA_SUBTOTAL;
 /* ************************************************************************************* */
 
 -- ------------------------------------------------------------------------------------- --
-## Consultar Ventas. Crear Vista
+## Consultar Inventario Ventas. Crear Vista
 CREATE VIEW VW_INVENTARIO_VENTAS AS
 SELECT 
 	nombre_categoria AS categoria,
@@ -167,50 +167,56 @@ LEFT JOIN LISTA_PRODUCTOS_PEDIDOS AS LPP
 ON P.codigo_producto = LPP.codigo_producto
 GROUP BY P.codigo_producto
 ORDER BY C.nombre_categoria ASC, cant_venta DESC;
--- ORDER BY C.codigo_categoria ASC, P.codigo_producto;
+
 
 -- ------------------------------------------------------------------------------------- --
-## Consultar Ventas. Usar Vista
+## Consultar Inventario Ventas. Usar Vista
 SELECT * FROM VW_INVENTARIO_VENTAS;
 
 -- ------------------------------------------------------------------------------------- --
-## Consultar Ventas. Eliminar Vista
+## Consultar Inventario Ventas. Eliminar Vista
 DROP VIEW VW_INVENTARIO_VENTAS;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* ************************************************************************************* */
 
 -- ------------------------------------------------------------------------------------- --
-## Consultar Compras
-
+## Consultar Inventario Compras. Crear Vista
 CREATE VIEW VW_INVENTARIO_COMPRAS AS
 SELECT 
-nombre_categoria AS categoria,
-PRODUCTOS.codigo_producto AS codigo,
-nombre_producto AS nombre,
-IFNULL(SUM(cantidad_productos_compra),0) AS cant_compra,
-IFNULL(precio_producto_compra,0) AS precio_compra,
-IFNULL(SUM(cantidad_productos_compra) * precio_producto_compra,0) AS subtotal_compras
-FROM CATEGORIAS
-INNER JOIN PRODUCTOS
-ON CATEGORIAS.codigo_categoria = PRODUCTOS.codigo_categoria
-LEFT JOIN LISTA_PRODUCTOS_COMPRADOS
-ON PRODUCTOS.codigo_producto = LISTA_PRODUCTOS_COMPRADOS.codigo_producto
-GROUP BY PRODUCTOS.codigo_producto
-ORDER BY PRODUCTOS.codigo_producto;
+	nombre_categoria AS categoria,
+	P.codigo_producto AS codigo,
+	nombre_producto AS nombre,
+	IFNULL(SUM(cantidad_productos_compra),0) AS cant_compra,
+	IFNULL(precio_producto_compra,0) AS precio_compra,
+	IFNULL(SUM(cantidad_productos_compra) * precio_producto_compra,0) AS subtotal_compras
+FROM CATEGORIAS AS C
+INNER JOIN PRODUCTOS AS P
+ON C.codigo_categoria = P.codigo_categoria
+LEFT JOIN LISTA_PRODUCTOS_COMPRADOS AS LPC
+ON P.codigo_producto = LPC.codigo_producto
+GROUP BY P.codigo_producto
+ORDER BY C.nombre_categoria ASC, cant_compra DESC;
+
+-- ------------------------------------------------------------------------------------- --
+## Consultar Inventario Compras. Usar Vista
+SELECT * FROM VW_INVENTARIO_COMPRAS;
+
+-- ------------------------------------------------------------------------------------- --
+## Consultar Inventario Ventas. Eliminar Vista
+DROP VIEW VW_INVENTARIO_COMPRAS;
+
+/* ************************************************************************************* */
+
+
+
+
+
+
+
+
+
+
+
 
 -- ------------------------------------------------------------------------------------- --
 ## Consultar diferencia entre ventas y compras
