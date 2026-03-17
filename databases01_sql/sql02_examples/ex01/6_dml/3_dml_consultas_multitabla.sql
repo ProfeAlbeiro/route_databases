@@ -243,6 +243,15 @@ ON clientes.codigo_customer = pedidos.codigo_customer;
 --       puede existir pedidos sin clientes
 -- ------------------------------------------------------------------------------------- --
 
+
+
+
+
+
+
+
+
+
 -- ------------------------------------------------------------------------------------- --
 -- 2.3. Subconsultas. ------------------------------------------------------------------ --
 --      IN, NOT IN, ANY, ALL : --------------------------------------------------------- --
@@ -314,3 +323,61 @@ WHERE pedidos.codigo_customer IS NULL;
 --      https://www.youtube.com/playlist?list=PLU8oAlHdN5Bmx-LChV4K3MbHrpZKefNwn         --
 --      página web                                                                       --
 -- ------------------------------------------------------------------------------------- --
+
+
+- ------------------------------------------------------------------------------------- --
+-- 2.3.4. Ejemplos. -------------------------------------------------------------------- --
+-- ------------------------------------------------------------------------------------- --
+
+
+-- ------------------------------------------------------------------------------------- --
+-- ------------------------- Subconsultas en WHERE (las más comunes) ------------------- --
+-- ------------------------------------------------------------------------------------- --
+
+-- ------------------------------------------------------------------------------------- --
+-- Ejemplo 1. Una Tabla: Encontrar productos con precio mayor al promedio
+-- ------------------------------------------------------------------------------------- --
+
+-- La primera es la Interna: "Calcula el promedio de TODOS los precios de la tabla PRODUCTOS"
+SELECT 
+	AVG(precio_producto)
+FROM PRODUCTOS;
+
+-- La primera es la Externa: "Muestra el nombre del producto y su precio"
+SELECT 
+	nombre_producto, 
+	precio_producto
+FROM PRODUCTOS;
+
+-- La Subconsulta: "Comparar los productos con mayor precio (>) que el valor promedio"
+SELECT 
+	nombre_producto, 
+	precio_producto
+FROM PRODUCTOS
+WHERE precio_producto > (
+    SELECT 
+		AVG(precio_producto)
+    FROM PRODUCTOS
+);
+
+
+-- ------------------------------------------------------------------------------------- --
+-- Ejemplo 2. Multitabla: Productos de la categoría con más productos
+-- ------------------------------------------------------------------------------------- --
+
+-- La primera es la Interna: "Agrupa productos por categoría, cuenta los productos por categoría, ordena de mayor a menor cantidad, 
+-- 							 "toma la categoría con más productos, Devuelve SOLO el código de esa categoría""
+-- 
+SELECT 	
+	codigo_categoria,
+    nombre_producto, 
+    stock_productos
+FROM PRODUCTOS
+WHERE codigo_categoria = (
+    SELECT 
+		codigo_categoria        
+    FROM PRODUCTOS
+    GROUP BY codigo_categoria
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+);
