@@ -519,7 +519,6 @@ FROM productos AS p;
 -- Ejemplo 6: Ventas por categoría
 -- ------------------------------------------------------------------------------------- --
 
-
 SELECT 
     dc.nombre_categoria,
     dc.total_vendido,
