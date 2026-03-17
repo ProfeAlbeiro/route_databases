@@ -335,47 +335,75 @@ WHERE pedidos.codigo_customer IS NULL;
 -- ------------------------------------------------------------------------------------- --
 
 -- ------------------------------------------------------------------------------------- --
--- Ejemplo 1. Una Tabla: Encontrar productos con precio mayor al promedio
+-- Ejemplo 1. Encontrar productos con precio mayor al promedio (Una Tabla)
 -- ------------------------------------------------------------------------------------- --
 
--- La primera es la Interna: "Calcula el promedio de TODOS los precios de la tabla PRODUCTOS"
+-- Interna: 
+-- 
+-- 01. Calcula el promedio de TODOS los precios de la tabla PRODUCTOS
 SELECT 
 	AVG(precio_producto)
 FROM PRODUCTOS;
 
--- La primera es la Externa: "Muestra el nombre del producto y su precio"
+-- Externa: 
+--
+-- 01. Muestra el nombre del producto y su precio
+
 SELECT 
 	nombre_producto, 
 	precio_producto
 FROM PRODUCTOS;
 
--- La Subconsulta: "Comparar los productos con mayor precio (>) que el valor promedio"
+-- Subconsulta:
+
 SELECT 
 	nombre_producto, 
 	precio_producto
 FROM PRODUCTOS
 WHERE precio_producto > (
     SELECT 
-		AVG(precio_producto)
+		  AVG(precio_producto)
     FROM PRODUCTOS
 );
 
 
 -- ------------------------------------------------------------------------------------- --
--- Ejemplo 2. Multitabla: Productos de la categoría con más productos
+-- Ejemplo 2. Productos de la categoría con más productos (Multitabla)
 -- ------------------------------------------------------------------------------------- --
 
--- La primera es la Interna: "Agrupa productos por categoría, cuenta los productos por categoría, ordena de mayor a menor cantidad, 
--- 							 "toma la categoría con más productos, Devuelve SOLO el código de esa categoría""
+-- Interna:
 -- 
+-- 01. Agrupa productos por categoría
+-- 02. Cuenta los productos por categoría 
+-- 03. Ordena de mayor a menor cantidad
+-- 04. Toma la categoría con más productos
+-- 05. Devuelve SOLO el código de esa categoría
+
+SELECT 
+  codigo_categoria
+FROM PRODUCTOS
+GROUP BY codigo_categoria
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
+-- Externa:
+-- 
+-- 01. Muestra la categoría del producto y su nombre
+
+SELECT 
+  codigo_categoria, 
+  nombre_producto
+FROM PRODUCTOS;
+
+-- Subconsulta: 
+
 SELECT 	
 	codigo_categoria,
-    nombre_producto, 
-    stock_productos
+  nombre_producto
 FROM PRODUCTOS
 WHERE codigo_categoria = (
     SELECT 
-		codigo_categoria        
+		  codigo_categoria        
     FROM PRODUCTOS
     GROUP BY codigo_categoria
     ORDER BY COUNT(*) DESC
