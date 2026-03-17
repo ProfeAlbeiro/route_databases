@@ -331,7 +331,7 @@ WHERE pedidos.codigo_customer IS NULL;
 
 
 -- ------------------------------------------------------------------------------------- --
--- ------------------------- Subconsultas en WHERE (las más comunes) ------------------- --
+-- ------------- Subconsultas en WHERE (Operadores Comparación y Lógicos) -------------- --
 -- ------------------------------------------------------------------------------------- --
 
 -- ------------------------------------------------------------------------------------- --
@@ -442,7 +442,8 @@ FROM PRODUCTOS;
 -- 01. "NOT IN". Filtra los productos cuyo código NO ESTÁ en la lista de códigos de productos pedidos
 
 SELECT 
-	nombre_producto
+	codigo_producto,
+    nombre_producto
 FROM PRODUCTOS
 WHERE codigo_producto NOT IN (
     SELECT DISTINCT codigo_producto
@@ -450,7 +451,7 @@ WHERE codigo_producto NOT IN (
 );
 
 -- ------------------------------------------------------------------------------------- --
--- Ejemplo 4: Usando EXISTS - Clientes que tienen pedidos (Multitabla)
+-- Ejemplo 4: Clientes que tienen pedidos (Multitabla)
 -- ------------------------------------------------------------------------------------- --
 SELECT * FROM usuarios;
 SELECT * FROM clientes;
