@@ -127,6 +127,7 @@ INSERT INTO LISTA_PRODUCTOS_PEDIDOS VALUES
 ('pedido-4', 'prod-7', 5),
 ('pedido-5', 'prod-12', 4);
 
+
 INSERT INTO VENDEDORES_PEDIDOS VALUES
 ('seller-1', 'pedido-1'),
 ('seller-2', 'pedido-4');

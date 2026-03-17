@@ -337,16 +337,16 @@ WHERE pedidos.codigo_customer IS NULL;
 -- ------------------------------------------------------------------------------------- --
 -- Ejemplo 1. Encontrar productos con precio mayor al promedio (Una Tabla)
 -- ------------------------------------------------------------------------------------- --
+SELECT * FROM productos;
 
--- Interna: 
--- 
+-- Interna:
 -- 01. Calcula el promedio de TODOS los precios de la tabla PRODUCTOS
+
 SELECT 
 	AVG(precio_producto)
 FROM PRODUCTOS;
 
 -- Externa: 
---
 -- 01. Muestra el nombre del producto y su precio
 
 SELECT 
@@ -355,6 +355,7 @@ SELECT
 FROM PRODUCTOS;
 
 -- Subconsulta:
+-- 01. ">". Compara el precio de cada producto, con el promedio de precios que devuelve la subconsulta
 
 SELECT 
 	nombre_producto, 
@@ -368,11 +369,12 @@ WHERE precio_producto > (
 
 
 -- ------------------------------------------------------------------------------------- --
--- Ejemplo 2. Productos de la categoría con más productos (Multitabla)
+-- Ejemplo 2. Productos de la categoría con más productos (Una Tabla)
 -- ------------------------------------------------------------------------------------- --
+SELECT * FROM productos;
+SELECT * FROM categorias;
 
 -- Interna:
--- 
 -- 01. Agrupa productos por categoría
 -- 02. Cuenta los productos por categoría 
 -- 03. Ordena de mayor a menor cantidad
@@ -387,8 +389,7 @@ ORDER BY COUNT(*) DESC
 LIMIT 1;
 
 -- Externa:
--- 
--- 01. Muestra la categoría del producto y su nombre
+-- 01. Muestra el código de categoría y el nombre del Producto
 
 SELECT 
   codigo_categoria, 
@@ -396,9 +397,11 @@ SELECT
 FROM PRODUCTOS;
 
 -- Subconsulta: 
+-- 01. "=". Compara el código de categoría de cada producto, con el código de categoría que 
+--          devuelve la subconsulta (la categoría con más productos)
 
 SELECT 	
-	codigo_categoria,
+  codigo_categoria,
   nombre_producto
 FROM PRODUCTOS
 WHERE codigo_categoria = (
@@ -409,3 +412,127 @@ WHERE codigo_categoria = (
     ORDER BY COUNT(*) DESC
     LIMIT 1
 );
+
+-- ------------------------------------------------------------------------------------- --
+-- ---------------------- Subconsultas con operadores especiales ----------------------- --
+-- ------------------------------------------------------------------------------------- --
+
+-- ------------------------------------------------------------------------------------- --
+-- Ejemplo 3: Productos que nunca se han pedido (Multitabla)
+-- ------------------------------------------------------------------------------------- --
+SELECT * FROM productos;
+SELECT * FROM lista_productos_pedidos;
+
+-- Interna:
+-- 01. Busca en la tabla de listas de pedidos
+-- 02. DISTINCT elimina duplicados
+-- 03. Devuelve TODOS los códigos de productos que ALGUNA VEZ se han pedido
+
+SELECT DISTINCT codigo_producto
+FROM LISTA_PRODUCTOS_PEDIDOS;
+
+-- Externa:
+-- 01. Muestra el nombre de los productos
+
+SELECT 
+	nombre_producto
+FROM PRODUCTOS;
+
+-- Subconsulta: 
+-- 01. "NOT IN". Filtra los productos cuyo código NO ESTÁ en la lista de códigos de productos pedidos
+
+SELECT 
+	nombre_producto
+FROM PRODUCTOS
+WHERE codigo_producto NOT IN (
+    SELECT DISTINCT codigo_producto
+    FROM LISTA_PRODUCTOS_PEDIDOS
+);
+
+-- ------------------------------------------------------------------------------------- --
+-- Ejemplo 4: Usando EXISTS - Clientes que tienen pedidos (Multitabla)
+-- ------------------------------------------------------------------------------------- --
+SELECT * FROM usuarios;
+SELECT * FROM clientes;
+SELECT * FROM pedidos;
+
+-- Interna:
+-- 01. "SELECT 1" es solo para eficiencia (no nos interesa qué devuelve, solo si existe [Cada uno de los pedidos])
+
+SELECT 1
+FROM pedidos;
+
+-- Externa:
+-- 01. Conecta USUARIOS con CLIENTES para obtener solo usuarios que son clientes
+
+SELECT 
+  u.nombres_user, 
+  u.apellidos_user
+FROM usuarios AS u
+INNER JOIN clientes AS c 
+ON u.codigo_user = c.codigo_customer;
+
+-- Subconsulta: 
+-- 01. Es CORRELACIONADA porque usa "c.codigo_customer" de la consulta interna con la consulta externa
+-- 02. "EXISTS": Filtra solo los clientes para los cuales la subconsulta devuelve TRUE
+
+SELECT 
+  u.nombres_user AS nombres, 
+  u.apellidos_user AS apellidos
+FROM usuarios AS u
+INNER JOIN clientes AS c 
+ON u.codigo_user = c.codigo_customer
+WHERE EXISTS (
+    SELECT 1
+    FROM pedidos AS p
+    WHERE p.codigo_customer = c.codigo_customer 
+);
+
+
+-- ------------------------------------------------------------------------------------- --
+-- ------------------- Subconsultas en SELECT (subconsulta escalar) -------------------- --
+-- ------------------------------------------------------------------------------------- --
+
+-- ------------------------------------------------------------------------------------- --
+-- Ejemplo 5: Mostrar productos con estadísticas (Una Tabla)
+-- ------------------------------------------------------------------------------------- --
+SELECT * FROM productos;
+
+-- Subconsulta:
+-- 01. Cada (SELECT AVG(...) FROM PRODUCTOS) es una subconsulta independiente
+-- 02. Se ejecuta UNA VEZ para toda la consulta (no por cada fila)
+-- 03. Devuelve un único valor que se repite en todas las filas
+
+SELECT 
+    p.nombre_producto,
+    p.precio_producto,
+    (SELECT AVG(precio_producto) FROM productos) AS precio_promedio,
+    p.precio_producto - (SELECT AVG(precio_producto) FROM productos) AS diferencia_promedio
+FROM productos AS p;
+
+
+-- ------------------------------------------------------------------------------------- --
+-- ------------------- Subconsultas en FROM (subconsulta escalar) -------------------- --
+-- ------------------------------------------------------------------------------------- --
+
+-- ------------------------------------------------------------------------------------- --
+-- Ejemplo 6: Ventas por categoría
+-- ------------------------------------------------------------------------------------- --
+
+
+SELECT 
+    dc.nombre_categoria,
+    dc.total_vendido,
+    ROUND(dc.total_vendido / (SELECT SUM(total_pr_pedido) FROM pedidos) * 100, 2) AS porcentaje_ventas
+FROM (
+    SELECT 
+        c.nombre_categoria,
+        SUM(p.total_pr_pedido) AS total_vendido
+    FROM categorias AS c
+    INNER JOIN PRODUCTOS prod ON c.codigo_categoria = prod.codigo_categoria
+    INNER JOIN LISTA_PRODUCTOS_PEDIDOS lpp ON prod.codigo_producto = lpp.codigo_producto
+    INNER JOIN PEDIDOS p ON lpp.codigo_pedido = p.codigo_pedido
+    GROUP BY c.nombre_categoria
+) AS dc;
+
+
